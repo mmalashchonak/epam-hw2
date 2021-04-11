@@ -5,12 +5,16 @@ import com.epam.webdev.entity.Basket;
 import com.epam.webdev.entity.Color;
 import com.epam.webdev.exception.NullBallException;
 import com.epam.webdev.exception.NullBasketException;
+import com.epam.webdev.exception.NullColorException;
+import com.epam.webdev.exception.NullStorageException;
 import com.epam.webdev.service.BasketProcessor;
+
+import java.util.ArrayList;
 
 public class Main {
 
-    public static void main(String[] args) throws NullBasketException, NullBallException {
-        Basket basket = new Basket();
+    public static void main(String[] args) throws NullBasketException, NullBallException, NullStorageException, NullColorException {
+        Basket basket = new Basket(new ArrayList<>());
 
         Ball firstBlueBall = new Ball(Color.BLUE, 10.0);
         Ball secondBlueBall = new Ball(Color.BLUE, 15.0);

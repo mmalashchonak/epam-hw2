@@ -1,9 +1,6 @@
 package com.epam.webdev.entity;
 
-import com.epam.webdev.exception.IncorrectWeightException;
-
 import java.io.Serializable;
-import java.util.Objects;
 
 public class Ball implements Serializable {
 
@@ -30,18 +27,14 @@ public class Ball implements Serializable {
         return weight;
     }
 
-    public void setWeight(double weight) throws IncorrectWeightException {
-        if(weight <= 0){
-            throw new IncorrectWeightException();
-        }
-
+    public void setWeight(double weight) {
         this.weight = weight;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Ball)) return false;
+        if (!(o.getClass() == Ball.class)) return false;
         Ball ball = (Ball) o;
         return Double.compare(ball.getWeight(), getWeight()) == 0 &&
                 getColor() == ball.getColor();
@@ -49,7 +42,9 @@ public class Ball implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(getColor(), getWeight());
+        int result = (int) (31 * Double.doubleToLongBits(getWeight()) + (getColor() == null ? 0 : getColor().hashCode()));
+
+        return result;
     }
 
     @Override

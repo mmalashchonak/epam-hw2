@@ -1,19 +1,18 @@
 package com.epam.webdev.entity;
 
-import com.epam.webdev.exception.IncorrectIndexException;
+import com.epam.webdev.exception.BasketIsEmptyException;
 import com.epam.webdev.exception.NullBallException;
 import com.epam.webdev.exception.NullStorageException;
 
-import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Objects;
 
 public class Basket {
 
     private List<Ball> storage;
 
+    @SuppressWarnings("For posssible serialization.")
     public Basket() {
-        storage = new ArrayList<>();
     }
 
     public Basket(List<Ball> storage) {
@@ -24,43 +23,57 @@ public class Basket {
         return storage;
     }
 
-    public void setStorage(List<Ball> storage) throws NullStorageException {
-        if(storage == null){
-            throw new NullStorageException();
-        }
-
+    public void setStorage(List<Ball> storage) {
         this.storage = storage;
     }
 
-    public void addBall(Ball ball) throws NullBallException {
-        if(ball == null) {
-            throw new NullBallException();
+    public void addBall(Ball ball) throws NullBallException, NullStorageException {
+        if (ball == null) {
+            throw new NullBallException("Ball can not be null.");
+        }
+
+        if (storage == null) {
+            throw new NullStorageException("Storage can not be null.");
         }
 
         storage.add(ball);
     }
 
-    public Ball getBall(int index) throws IncorrectIndexException {
-        if(index > storage.size() - 1 || index < 0){
-            throw new IncorrectIndexException();
+    public Ball getBall() throws BasketIsEmptyException, NullStorageException {
+
+        if (storage == null) {
+            throw new NullStorageException("Storage can not be null.");
         }
 
-        Ball ball = storage.get(index);
+        Iterator<Ball> iterator = storage.iterator();
+        if (iterator.hasNext()) {
+            Ball ball = iterator.next();
+            iterator.remove();
+            return ball;
+        }
 
-        return ball;
+        throw new BasketIsEmptyException("No balls in basket.");
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Basket)) return false;
+        if (!(o.getClass() == Basket.class)) return false;
         Basket basket = (Basket) o;
         return getStorage().equals(basket.getStorage());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getStorage());
+        if (getStorage() == null)
+            return 0;
+
+        int result = 1;
+
+        for (Ball ball : getStorage())
+            result = 31 * result + (ball == null ? 0 : ball.hashCode());
+
+        return result;
     }
 
     @Override
